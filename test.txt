@@ -1,0 +1,5 @@
+if x then
+    b:=3
+    else
+    c(1)
+
