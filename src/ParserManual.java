@@ -1,3 +1,9 @@
+/**
+ * Christian Sánchez Salas - Tarea #3 Árbol Manual.
+ * Compiladores e Intérpretes.
+ * Septiembre, 2018.
+ * Carné: 201204082.
+ */
 import MyAST.*;
 
 import org.antlr.v4.runtime.Token;

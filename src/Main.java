@@ -1,4 +1,9 @@
-// import generated.*;
+/**
+ * Christian Sánchez Salas - Tarea #3 Árbol Manual.
+ * Compiladores e Intérpretes.
+ * Septiembre, 2018.
+ * Carné: 201204082.
+ */
 import MyAST.AST;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
@@ -7,9 +12,7 @@ import javax.swing.*;
 import java.io.FileReader;
 import java.util.List;
 
-/**
- * Created by oviquez on 28/2/2018.
- */
+
 
 public class Main {
     public static void main(String[] args){
@@ -67,7 +70,6 @@ public class Main {
         inst = new Scanner(input);
         //inst.reset();*/
 
-        //Cambiar los listeners de errores sintácticos
     }
 
 }
