@@ -1,13 +1,10 @@
-import MyAST.ProgramAST;
-import MyAST.SingleCommandAST;
-import org.antlr.v4.runtime.Token;
 import MyAST.*;
+
+import org.antlr.v4.runtime.Token;
+
 
 import java.util.LinkedList;
 
-/**
- * Created by oviquez on 21/8/2018.
- */
 public class ParserManual {
 
     private Scanner e;
@@ -32,17 +29,17 @@ public class ParserManual {
         return  result;
     }
 
-    public Command command(){
+    public CommandAST command(){
 
         SingleCommandAST resultSC = singleCommand();
-        LinkedList<SingleCommandAST> resultSC_list = new LinkedList<>();
+        LinkedList<SingleCommandAST> resultSC_list = new LinkedList<>(); // CUANDO VIENEN  'N' VECES
         while(actualToken.getType()==Scanner.PyCOMA){
             accept(Scanner.PyCOMA);
-            singleCommand();
+            // singleCommand();
             SingleCommandAST resultSCItem = singleCommand();
             resultSC_list.add(resultSCItem); // lista indica que van uno o más singlecommands
         }
-        Command result = new Command(resultSC, resultSC_list);
+        CommandAST result = new CommandAST(resultSC, resultSC_list);
         return result;
     }
 
@@ -76,18 +73,199 @@ public class ParserManual {
             SingleCommandAST singleCommandASTFalse = singleCommand();
             resultSC = new IfSCAST(expressionAST, singleCommandASTTrue, singleCommandASTFalse);
         }
+        // DESDE AQUÍ EMPIEZA LA TAREA:
         else if(actualToken.getType() == Scanner.WHILE){
             accept(Scanner.WHILE);
-            expression();
+            ExpressionAST expressionAST = expression();
             accept(Scanner.DO);
-            singleCommand();
+            SingleCommandAST singleCommandASTDO = singleCommand();
+            resultSC = new WhileSCAST(expressionAST, singleCommandASTDO);
         }
         // y todos los demás
-        else{
+        else if(actualToken.getType() == Scanner.LET){
+            accept(Scanner.LET);
+            DeclarationAST declarationAST = declaration();
+            accept(Scanner.IN);
+            SingleCommandAST singleCommandASTIN = singleCommand();
+            resultSC = new LetSCAST(declarationAST, singleCommandASTIN);
+
+        }
+        else if(actualToken.getType() == Scanner.BEGIN){
+            accept(Scanner.BEGIN);
+            CommandAST commandAST = command();
+            accept(Scanner.END);
+            resultSC = new BeginSCAST(commandAST);
+
+        }else{
             System.out.println("Error Sintáctico");
         }
         return resultSC;
     }
 
-    public ExpressionAST expression(){ actualToken = this.e.nextToken(); return null;}
+    public TypeDenoterAST typeDenoter(){
+        TypeDenoterAST resultTD = null;
+        Token id = actualToken;
+        if (actualToken.getType() == Scanner.ID){
+            accept(Scanner.ID);
+        }else {
+            System.out.println("Error Sintáctico");
+        }
+        resultTD = new TypeDenoterAST(id);
+        return  resultTD;
+
+    }
+
+    public DeclarationAST declaration(){
+        SingleDeclarationAST resultSD = singleDeclaration();
+        LinkedList<SingleDeclarationAST> resultSD_list= new LinkedList<>();
+        while(actualToken.getType()==Scanner.PyCOMA){
+            accept(Scanner.PyCOMA);
+            SingleDeclarationAST resultSDItem = singleDeclaration();
+            resultSD_list.add(resultSDItem);
+        }
+        DeclarationAST resultDec = new DeclarationAST(resultSD, resultSD_list);
+        return resultDec;
+    }
+
+    public SingleDeclarationAST singleDeclaration(){
+        SingleDeclarationAST resultSD= null;
+        if(actualToken.getType()==Scanner.CONST){
+            accept(Scanner.CONST);
+            Token id = actualToken;
+            accept(Scanner.ID);
+            accept(Scanner.VIR);
+            ExpressionAST expressionAST = expression();
+            resultSD = new ConstSDAST(id, expressionAST);
+
+        }
+        else if(actualToken.getType()==Scanner.VAR){
+            accept(Scanner.VAR);
+            Token id = actualToken;
+            accept(Scanner.ID);
+            accept(Scanner.DOSPUN);
+            TypeDenoterAST typeDenoterAST = typeDenoter();
+            resultSD = new VarSDAST(id, typeDenoterAST);
+
+
+        }
+        else{
+            System.out.println("\nError\n");
+        } return resultSD;
+    }
+
+    public PrimaryExpressionAST primaryExpression(){
+
+        PrimaryExpressionAST primaryExpressionAST = null;
+        Token token = actualToken;
+        if (actualToken.getType()==Scanner.NUM){
+            primaryExpressionAST = new LiteralPEAST(token);
+            accept(Scanner.NUM);
+
+        }
+        else if(actualToken.getType()==Scanner.ID){
+            primaryExpressionAST = new IdentifierPEAST(token);
+            accept(Scanner.ID);
+        }
+        else if(actualToken.getType()==Scanner.PIZQ){
+            accept(Scanner.PIZQ);
+            ExpressionAST expressionAST = expression();
+            accept(Scanner.PDER);
+            primaryExpressionAST = new ExpressionPEAST(expressionAST);
+        }
+        else{
+            System.out.println("\nError\n");
+        } return primaryExpressionAST;
+    }
+
+    public ExpressionAST expression(){ 
+        // actualToken = this.e.nextToken();
+        PrimaryExpressionAST resultPE = primaryExpression();
+        LinkedList<Token> tokenLinkedList = new LinkedList<>();
+        LinkedList<PrimaryExpressionAST> resultPE_list = new LinkedList<>();
+        Token token = actualToken;
+        while((actualToken.getType()==Scanner.SUM)
+                || (actualToken.getType() == Scanner.SUM)
+                || (actualToken.getType() == Scanner.SUB)
+                || (actualToken.getType() == Scanner.MUL)
+                || (actualToken.getType() == Scanner.DIV)){
+            if(actualToken.getType()==Scanner.SUM){
+                token = actualToken;
+                accept(Scanner.SUM);
+                PrimaryExpressionAST resultPEItem = primaryExpression();
+                resultPE_list.add(resultPEItem);
+                tokenLinkedList.add(token);
+                /*if(actualToken.getType()==Scanner.NUM){
+                    accept(Scanner.NUM);
+                }
+                else if(actualToken.getType()==Scanner.ID){
+                    accept(Scanner.ID);
+                }
+                else{
+                    System.out.println("\nError\n");
+                }*/
+
+            }
+            else if(actualToken.getType() == Scanner.SUB){
+                token = actualToken;
+                accept(Scanner.SUB);
+                PrimaryExpressionAST resultPEItem = primaryExpression();
+                resultPE_list.add(resultPEItem);
+                tokenLinkedList.add(token);
+                /*if(actualToken.getType()==Scanner.NUM){
+                    accept(Scanner.NUM);
+                }
+                else if(actualToken.getType()==Scanner.ID){
+                    accept(Scanner.ID);
+                }
+                else{
+                    System.out.println("\nError\n");
+                }*/
+
+            }
+            else if(actualToken.getType() == Scanner.MUL){
+                token = actualToken;
+                accept(Scanner.MUL);
+                PrimaryExpressionAST resultPEItem = primaryExpression();
+                resultPE_list.add(resultPEItem);
+                tokenLinkedList.add(token);
+                /*if(actualToken.getType()==Scanner.NUM){
+                    accept(Scanner.NUM);
+                }
+                else if(actualToken.getType()==Scanner.ID){
+                    accept(Scanner.ID);
+                }
+                else{
+                    System.out.println("\nError\n");
+                }*/
+
+            }
+            else if(actualToken.getType() == Scanner.DIV){
+                token = actualToken;
+                accept(Scanner.DIV);
+                PrimaryExpressionAST resultPEItem = primaryExpression();
+                resultPE_list.add(resultPEItem);
+                tokenLinkedList.add(token);
+
+                /*if(actualToken.getType()==Scanner.NUM){
+                    accept(Scanner.NUM);
+                }
+                else if(actualToken.getType()==Scanner.ID){
+                    accept(Scanner.ID);
+                }
+                else{
+                    System.out.println("\nError\n");
+                }*/
+
+            }
+            else{
+                System.out.println("\nError\n");
+            }
+
+
+        }
+        ExpressionAST result = new ExpressionAST(resultPE, tokenLinkedList, resultPE_list);
+        return result;
+        
+    
+    }
 }

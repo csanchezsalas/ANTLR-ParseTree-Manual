@@ -1,4 +1,4 @@
-// Generated from C:/Users/csanchezsalas/Documents/IdeaProjects/Alpha\Scanner.g4 by ANTLR 4.7
+// Generated from C:/Users/CHRISTIAN/Documents/GitHub/ANTLR-ParseTree-Manual\Scanner.g4 by ANTLR 4.7
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;

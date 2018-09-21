@@ -1,4 +1,4 @@
-// Generated from C:/Users/csanchezsalas/Documents/IdeaProjects/Alpha\Parser2.g4 by ANTLR 4.7
+// Generated from C:/Users/CHRISTIAN/Documents/GitHub/ANTLR-ParseTree-Manual\Parser2.g4 by ANTLR 4.7
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -17,12 +17,12 @@ public interface Parser2Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitProgramAST(Parser2.ProgramASTContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code commandAST}
-	 * labeled alternative in {@link Parser2#command}.
+	 * Visit a parse tree produced by the {@code command}
+	 * labeled alternative in {@link Parser2#commandAST}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCommandAST(Parser2.CommandASTContext ctx);
+	T visitCommand(Parser2.CommandContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code assignSCAST}
 	 * labeled alternative in {@link Parser2#singleCommand}.
@@ -121,32 +121,4 @@ public interface Parser2Visitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitGroupPEAST(Parser2.GroupPEASTContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code sumOPAST}
-	 * labeled alternative in {@link Parser2#operator}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSumOPAST(Parser2.SumOPASTContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code subOPAST}
-	 * labeled alternative in {@link Parser2#operator}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSubOPAST(Parser2.SubOPASTContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code mulOPAST}
-	 * labeled alternative in {@link Parser2#operator}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitMulOPAST(Parser2.MulOPASTContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code divOPAST}
-	 * labeled alternative in {@link Parser2#operator}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitDivOPAST(Parser2.DivOPASTContext ctx);
 }

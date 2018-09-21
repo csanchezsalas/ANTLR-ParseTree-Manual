@@ -5,25 +5,25 @@ options {
 }
 
 program : singleCommand EOF                                   #programAST ;
-command : singleCommand (PyCOMA singleCommand)*               #commandAST ;
+commandAST : singleCommand (PyCOMA singleCommand)*               #command ;
 singleCommand : ID   ASSIGN expression                        #assignSCAST
                      | PIZQ expression PDER                   #funCallSCAST
         | IF expression THEN singleCommand
                         ELSE singleCommand                    #ifSCAST
         | WHILE expression DO singleCommand                   #whileSCAST
         | LET declaration IN singleCommand                    #letSCAST
-        | BEGIN command END                                   #blockSCAST ;
+        | BEGIN commandAST END                                   #blockSCAST ;
 declaration  : singleDeclaration (PyCOMA singleDeclaration)*  #declarationAST;
 singleDeclaration : CONST ID VIR expression                   #constDeclAST
     	   | VAR ID DOSPUN typedenoter                        #varDeclAST;
 typedenoter : ID                                              #typedenoterAST;
-expression : primaryExpression (operator primaryExpression)*  #expressionAST;
+expression : primaryExpression ((PLUS|MINUS|MULT|DIV) primaryExpression)*  #expressionAST;
 primaryExpression :  NUM                                      #numPEAST
                     | ID                                      #idPEAST
                     | PIZQ expression PDER                    #groupPEAST ;
-operator :  SUM                                               #sumOPAST
+/* operator :  SUM                                               #sumOPAST
             | SUB                                             #subOPAST
             | MUL                                             #mulOPAST
-            | DIV                                             #divOPAST;
+            | DIV                                             #divOPAST; */
 
 
